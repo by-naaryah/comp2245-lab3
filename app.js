@@ -41,15 +41,17 @@ buildBoard();
 
 let moves = 0;
 let flippedCards = [];
+let waiting = false;
 
 board.addEventListener("click", function(event) {
   let card = event.target;
-
   if (!card.classList.contains("card")) return;
   if (card.classList.contains("flipped")) return;
+  if (waiting) return;
 
   let index = card.dataset.index;
   let fruit = deck[index];
+
   card.textContent = fruit.symbol;
   card.classList.add("flipped");
   card.setAttribute("aria-label", "Card " + (parseInt(index) + 1) + ", " + fruit.name);
@@ -70,8 +72,21 @@ board.addEventListener("click", function(event) {
       flippedCards[0].disabled = true;
       flippedCards[1].disabled = true;
       document.getElementById("status").textContent = "That's a pair!";
+      flippedCards = [];
+    } else {
+      // not a match
+      document.getElementById("status").textContent = "Not a pair. Try again.";
+      waiting = true;
+      setTimeout(function() {
+        flippedCards[0].textContent = "";
+        flippedCards[1].textContent = "";
+        flippedCards[0].classList.remove("flipped");
+        flippedCards[1].classList.remove("flipped");
+        flippedCards[0].setAttribute("aria-label", "Card " + (parseInt(flippedCards[0].dataset.index) + 1) + ", face down");
+        flippedCards[1].setAttribute("aria-label", "Card " + (parseInt(flippedCards[1].dataset.index) + 1) + ", face down");
+        flippedCards = [];
+        waiting = false;
+      }, 1000); // wait 1 second
     }
-
-    flippedCards = [];
   }
 });
