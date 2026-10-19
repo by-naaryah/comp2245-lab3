@@ -101,3 +101,40 @@ board.addEventListener("click", function(event) {
     }
   }
 });
+let timerId = null; // keep track of the timeout
+
+function startNewGame() {
+  // cancel any pending flip-back
+  if (timerId) {
+    clearTimeout(timerId);
+    timerId = null;
+  }
+  waiting = false;
+
+  // reshuffle deck
+  deck = shuffle([...fruits, ...fruits]);
+
+  // rebuild board
+  const board = document.getElementById("board");
+  board.replaceChildren();
+  deck.forEach((fruit, index) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.classList.add("card");
+    card.dataset.index = index;
+    card.setAttribute("aria-label", `Card ${index + 1}, face down`);
+    card.textContent = "";
+    board.appendChild(card);
+  });
+
+  // reset state
+  moves = 0;
+  flippedCards = [];
+  document.getElementById("moves").textContent = moves;
+  const status = document.getElementById("status");
+  status.textContent = "Turn over two cards to find a matching pair.";
+  status.classList.remove("you-won");
+}
+
+// hook up the button
+document.getElementById("new-game").addEventListener("click", startNewGame);
