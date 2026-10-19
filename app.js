@@ -52,6 +52,7 @@ board.addEventListener("click", function(event) {
   let index = card.dataset.index;
   let fruit = deck[index];
 
+  // flip card
   card.textContent = fruit.symbol;
   card.classList.add("flipped");
   card.setAttribute("aria-label", "Card " + (parseInt(index) + 1) + ", " + fruit.name);
@@ -62,31 +63,41 @@ board.addEventListener("click", function(event) {
     moves++;
     document.getElementById("moves").textContent = moves;
 
-    let fruit1 = deck[flippedCards[0].dataset.index];
-    let fruit2 = deck[flippedCards[1].dataset.index];
+    let card1 = flippedCards[0];
+    let card2 = flippedCards[1];
+    let fruit1 = deck[card1.dataset.index];
+    let fruit2 = deck[card2.dataset.index];
 
     if (fruit1.name === fruit2.name) {
       // they match
-      flippedCards[0].classList.add("matched");
-      flippedCards[1].classList.add("matched");
-      flippedCards[0].disabled = true;
-      flippedCards[1].disabled = true;
+      card1.classList.add("matched");
+      card2.classList.add("matched");
+      card1.disabled = true;
+      card2.disabled = true;
       document.getElementById("status").textContent = "That's a pair!";
       flippedCards = [];
+
+      // check if all cards are matched
+      let matchedCount = document.querySelectorAll(".card.matched").length;
+      if (matchedCount === deck.length) {
+        let status = document.getElementById("status");
+        status.textContent = "You found all the pairs in " + moves + " moves!";
+        status.classList.add("you-won");
+      }
     } else {
       // not a match
       document.getElementById("status").textContent = "Not a pair. Try again.";
       waiting = true;
       setTimeout(function() {
-        flippedCards[0].textContent = "";
-        flippedCards[1].textContent = "";
-        flippedCards[0].classList.remove("flipped");
-        flippedCards[1].classList.remove("flipped");
-        flippedCards[0].setAttribute("aria-label", "Card " + (parseInt(flippedCards[0].dataset.index) + 1) + ", face down");
-        flippedCards[1].setAttribute("aria-label", "Card " + (parseInt(flippedCards[1].dataset.index) + 1) + ", face down");
+        card1.textContent = "";
+        card2.textContent = "";
+        card1.classList.remove("flipped");
+        card2.classList.remove("flipped");
+        card1.setAttribute("aria-label", "Card " + (parseInt(card1.dataset.index) + 1) + ", face down");
+        card2.setAttribute("aria-label", "Card " + (parseInt(card2.dataset.index) + 1) + ", face down");
         flippedCards = [];
         waiting = false;
-      }, 1000); // wait 1 second
+      }, 1000);
     }
   }
 });
