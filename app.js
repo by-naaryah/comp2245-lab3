@@ -26,10 +26,27 @@ deck.forEach((fruit, index) => {
   const card = document.createElement("button");
   card.type = "button";
   card.classList.add("card");
-  
+
   // Accessibility: label for screen readers
   card.setAttribute("aria-label", fruit.name);
   // For now, leave the card face down
   card.textContent = "";
   board.appendChild(card);
 });
+
+deck.forEach((fruit, index) => {
+  const card = document.createElement("button");
+  card.type = "button";
+  card.classList.add("card");
+  card.setAttribute("aria-label", `Card ${index + 1}, face down`);
+  card.textContent = "";
+  board.appendChild(card);
+});
+
+  // Accessibility: label each card by position
+  card.setAttribute("aria-label", `Card ${index + 1}, face down`);
+
+  // Leave face down (no emoji yet)
+  card.textContent = "";
+
+  board.appendChild(card);
