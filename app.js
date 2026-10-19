@@ -17,3 +17,19 @@ function shuffle(array) {
   return array;
 }
 
+// Make the deck: each fruit twice
+let deck = [...fruits, ...fruits];
+deck = shuffle(deck);
+
+const board = document.getElementById("board");
+deck.forEach((fruit, index) => {
+  const card = document.createElement("button");
+  card.type = "button";
+  card.classList.add("card");
+  
+  // Accessibility: label for screen readers
+  card.setAttribute("aria-label", fruit.name);
+  // For now, leave the card face down
+  card.textContent = "";
+  board.appendChild(card);
+});
