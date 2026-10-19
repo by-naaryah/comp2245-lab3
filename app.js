@@ -39,17 +39,15 @@ function buildBoard() {
 }
 buildBoard();
 
+let moves = 0;
 let flippedCards = [];
-const board = document.getElementById("board");
+
 board.addEventListener("click", function(event) {
   let card = event.target;
 
-  if (!card.classList.contains("card")) {
-    return;
-  }
-  if (card.classList.contains("flipped")) {
-    return;
-  }
+  if (!card.classList.contains("card")) return;
+  if (card.classList.contains("flipped")) return;
+
   let index = card.dataset.index;
   let fruit = deck[index];
   card.textContent = fruit.symbol;
@@ -57,7 +55,23 @@ board.addEventListener("click", function(event) {
   card.setAttribute("aria-label", "Card " + (parseInt(index) + 1) + ", " + fruit.name);
 
   flippedCards.push(card);
+
   if (flippedCards.length === 2) {
-    console.log("Two cards flipped:", flippedCards);
+    moves++;
+    document.getElementById("moves").textContent = moves;
+
+    let fruit1 = deck[flippedCards[0].dataset.index];
+    let fruit2 = deck[flippedCards[1].dataset.index];
+
+    if (fruit1.name === fruit2.name) {
+      // they match
+      flippedCards[0].classList.add("matched");
+      flippedCards[1].classList.add("matched");
+      flippedCards[0].disabled = true;
+      flippedCards[1].disabled = true;
+      document.getElementById("status").textContent = "That's a pair!";
+    }
+
+    flippedCards = [];
   }
 });
