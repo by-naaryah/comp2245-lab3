@@ -24,18 +24,40 @@ deck = shuffle(deck);
 function buildBoard() {
   const board = document.getElementById("board");
   board.innerHTML = ""; 
-
   deck.forEach((fruit, index) => {
-    const card = document.createElement("button");
-    card.type = "button";
-    card.classList.add("card");
+  const card = document.createElement("button");
+  card.type = "button";
+  card.classList.add("card");
+  // give each card its index so we can find it later
+  card.dataset.index = index;
+  // labels
+  card.setAttribute("aria-label", `Card ${index + 1}, face down`);
+  card.textContent = "";
+  board.appendChild(card);
+});
 
-    // labels
-    card.setAttribute("aria-label", `Card ${index + 1}, face down`);
-
-    //no emoji yet
-    card.textContent = "";
-    board.appendChild(card);
-  });
 }
 buildBoard();
+
+let flippedCards = [];
+const board = document.getElementById("board");
+board.addEventListener("click", function(event) {
+  let card = event.target;
+
+  if (!card.classList.contains("card")) {
+    return;
+  }
+  if (card.classList.contains("flipped")) {
+    return;
+  }
+  let index = card.dataset.index;
+  let fruit = deck[index];
+  card.textContent = fruit.symbol;
+  card.classList.add("flipped");
+  card.setAttribute("aria-label", "Card " + (parseInt(index) + 1) + ", " + fruit.name);
+
+  flippedCards.push(card);
+  if (flippedCards.length === 2) {
+    console.log("Two cards flipped:", flippedCards);
+  }
+});
